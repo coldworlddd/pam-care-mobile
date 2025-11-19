@@ -1,6 +1,7 @@
+import { Button } from '@/components/ui/button';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Linking, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function GetStartedScreen() {
@@ -42,35 +43,27 @@ export default function GetStartedScreen() {
 
         {/* Buttons Section */}
         <View style={styles.buttonsSection}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              styles.emailButton,
-              styles.buttonPressed,
-            ]}
+          <Button
+            variant="primary"
             onPress={handleEmailPress}
-            accessibilityLabel="Continue with Email"
-            accessibilityRole="button"
+            fullWidth
+            leftIcon={<MaterialIcons name="email" size={24} color="#FFFFFF" />}
           >
-            <MaterialIcons name="email" size={24} color="#FFFFFF" />
-            <Text style={styles.emailButtonText}>Continue with Email</Text>
-          </TouchableOpacity>
+            Continue with Email
+          </Button>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.button,
-              styles.googleButton,
-              pressed && styles.buttonPressed,
-            ]}
+          <Button
+            variant="outline"
             onPress={handleGooglePress}
-            accessibilityLabel="Continue with Google"
-            accessibilityRole="button"
+            fullWidth
+            leftIcon={
+              <View style={styles.googleIconContainer}>
+                <Text style={styles.googleIconText}>G</Text>
+              </View>
+            }
           >
-            <View style={styles.googleIconContainer}>
-              <Text style={styles.googleIconText}>G</Text>
-            </View>
-            <Text style={styles.googleButtonText}>Continue with Google</Text>
-          </Pressable>
+            Continue with Google
+          </Button>
         </View>
 
         {/* Legal Text */}
@@ -137,44 +130,6 @@ const styles = StyleSheet.create({
     maxWidth: 347,
     gap: 14,
     marginBottom: 60,
-  },
-  button: {
-    height: 40,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 12,
-  },
-  emailButton: {
-    backgroundColor: '#009321',
-    borderWidth: 1,
-    borderColor: '#FFFFFF',
-  },
-  googleButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#9E9E9E',
-  },
-  buttonPressed: {
-    opacity: 0.8,
-  },
-  emailButtonText: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontFamily: 'DMSans-SemiBold',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    letterSpacing: 0.28,
-  },
-  googleButtonText: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontFamily: 'DMSans-SemiBold',
-    color: '#1a1a1a',
-    textTransform: 'capitalize',
-    letterSpacing: 0.28,
   },
   googleIconContainer: {
     width: 24,

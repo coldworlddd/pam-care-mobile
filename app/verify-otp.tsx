@@ -1,13 +1,13 @@
+import { Button } from '@/components/ui/button';
+import { OTPInput } from '@/components/ui/otp-input';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,7 +23,6 @@ export default function VerifyOtpScreen() {
   const [timer, setTimer] = useState(63); // 1:03 in seconds
   const [isResending, setIsResending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const inputRefs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -40,33 +39,6 @@ export default function VerifyOtpScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleOtpChange = (value: string, index: number) => {
-    if (value.length > 1) return; // Only allow single digit
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    // Auto-focus next input
-    if (value && index < 3) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-submit when all fields are filled
-    if (value && index === 3) {
-      const fullOtp = [...newOtp];
-      fullOtp[index] = value;
-      if (fullOtp.every((digit) => digit !== '')) {
-        handleVerify(fullOtp.join(''));
-      }
-    }
-  };
-
-  const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
 
   const handleVerify = async (otpCode?: string) => {
     const code = otpCode || otp.join('');
@@ -89,7 +61,6 @@ export default function VerifyOtpScreen() {
       setIsResending(false);
       setTimer(63);
       setOtp(['', '', '', '']);
-      inputRefs.current[0]?.focus();
     }, 1000);
   };
 
@@ -118,24 +89,13 @@ export default function VerifyOtpScreen() {
 
           {/* OTP Input Section */}
           <View style={styles.otpSection}>
-            <View style={styles.otpContainer}>
-              {otp.map((digit, index) => (
-                <TextInput
-                  key={index}
-                  ref={(ref) => {
-                    inputRefs.current[index] = ref;
-                  }}
-                  style={styles.otpInput}
-                  value={digit}
-                  onChangeText={(value) => handleOtpChange(value, index)}
-                  onKeyPress={(e) => handleKeyPress(e, index)}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  selectTextOnFocus
-                  editable={!isResending}
-                />
-              ))}
-            </View>
+            <OTPInput
+              length={4}
+              value={otp}
+              onOtpChange={setOtp}
+              onOtpComplete={(code) => handleVerify(code)}
+              disabled={isResending}
+            />
           </View>
 
           {/* Resend Section */}
@@ -159,14 +119,13 @@ export default function VerifyOtpScreen() {
           {/* Continue Button */}
           {isOtpComplete && (
             <View style={styles.buttonSection}>
-              <TouchableOpacity
-                style={styles.button}
+              <Button
+                variant="primary"
                 onPress={() => handleVerify()}
-                accessibilityLabel="Continue"
-                accessibilityRole="button"
+                fullWidth
               >
-                <Text style={styles.buttonText}>Continue</Text>
-              </TouchableOpacity>
+                Continue
+              </Button>
             </View>
           )}
         </View>
@@ -229,23 +188,6 @@ const styles = StyleSheet.create({
   otpSection: {
     marginBottom: 48,
   },
-  otpContainer: {
-    flexDirection: 'row',
-    gap: 16,
-    justifyContent: 'center',
-  },
-  otpInput: {
-    width: 44,
-    height: 48,
-    borderWidth: 1,
-    borderColor: '#9E9E9E',
-    borderRadius: 8,
-    textAlign: 'center',
-    fontSize: 24,
-    fontFamily: 'DMSans-Regular',
-    color: '#000000',
-    backgroundColor: '#FFFFFF',
-  },
   resendSection: {
     alignItems: 'center',
     marginBottom: 24,
@@ -273,22 +215,6 @@ const styles = StyleSheet.create({
   buttonSection: {
     marginTop: 'auto',
     marginBottom: 34,
-  },
-  button: {
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: '#009321',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  buttonText: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontFamily: 'DMSans-SemiBold',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    letterSpacing: 0.28,
   },
 });
 

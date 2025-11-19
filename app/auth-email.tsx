@@ -1,13 +1,11 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    ActivityIndicator,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -61,49 +59,41 @@ export default function AuthEmailScreen() {
 
         {/* Input Section */}
         <View style={styles.inputSection}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, error && styles.inputError]}
-              placeholder="Email"
-              placeholderTextColor="rgba(26, 26, 26, 0.4)"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                if (error) setError('');
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              editable={!isLoading}
-            />
-            {error ? (
-              <Text style={styles.errorText}>{error}</Text>
-            ) : null}
-          </View>
+          <Input
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (error) setError('');
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            editable={!isLoading}
+            error={error}
+            disabled={isLoading}
+          />
         </View>
 
         {/* Button Section */}
         <View style={styles.buttonSection}>
-          <TouchableOpacity
-            style={[styles.button, isLoading && styles.buttonDisabled]}
+          <Button
+            variant="primary"
             onPress={handleContinue}
+            loading={isLoading}
             disabled={isLoading}
-            accessibilityLabel="Continue"
-            accessibilityRole="button"
+            fullWidth
           >
-            {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.buttonText}>Continue</Text>
-            )}
-          </TouchableOpacity>
+            Continue
+          </Button>
 
-          <Pressable
+          <Button
+            variant="text"
             onPress={handleForgottenPassword}
-            style={styles.forgotPasswordContainer}
+            style={styles.forgotPasswordButton}
           >
-            <Text style={styles.forgotPasswordText}>Forgotten Password</Text>
-          </Pressable>
+            Forgotten Password
+          </Button>
         </View>
       </View>
     </SafeAreaView>
@@ -141,62 +131,11 @@ const styles = StyleSheet.create({
   inputSection: {
     marginBottom: 60,
   },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  input: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#9E9E9E',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    fontFamily: 'DMSans-Regular',
-    color: '#000000',
-    backgroundColor: '#FFFFFF',
-  },
-  inputError: {
-    borderColor: '#FF3B30',
-    marginBottom: 4,
-  },
-  errorText: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontFamily: 'DMSans-Regular',
-    color: '#FF3B30',
-    marginTop: 4,
-  },
   buttonSection: {
     gap: 24,
   },
-  button: {
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: '#009321',
+  forgotPasswordButton: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontFamily: 'DMSans-SemiBold',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    letterSpacing: 0.28,
-  },
-  forgotPasswordContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontFamily: 'DMSans-Regular',
-    color: '#009321',
   },
 });
 

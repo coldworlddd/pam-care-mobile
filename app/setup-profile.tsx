@@ -1,15 +1,14 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // TODO: Install expo-image-picker: npx expo install expo-image-picker
@@ -91,46 +90,36 @@ export default function SetupProfileScreen() {
 
         {/* Input Section */}
         <View style={styles.inputSection}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              placeholderTextColor="rgba(26, 26, 26, 0.4)"
-              value={firstName}
-              onChangeText={setFirstName}
-              autoCapitalize="words"
-              editable={!isLoading}
-            />
-          </View>
+          <Input
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            autoCapitalize="words"
+            editable={!isLoading}
+            disabled={isLoading}
+          />
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              placeholderTextColor="rgba(26, 26, 26, 0.4)"
-              value={lastName}
-              onChangeText={setLastName}
-              autoCapitalize="words"
-              editable={!isLoading}
-            />
-          </View>
+          <Input
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            autoCapitalize="words"
+            editable={!isLoading}
+            disabled={isLoading}
+          />
         </View>
 
         {/* Button Section */}
         <View style={styles.buttonSection}>
-          <TouchableOpacity
-            style={[styles.button, isLoading && styles.buttonDisabled]}
+          <Button
+            variant="primary"
             onPress={handleContinue}
+            loading={isLoading}
             disabled={isLoading}
-            accessibilityLabel="Continue"
-            accessibilityRole="button"
+            fullWidth
           >
-            {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.buttonText}>Continue</Text>
-            )}
-          </TouchableOpacity>
+            Continue
+          </Button>
         </View>
       </View>
     </SafeAreaView>
@@ -197,45 +186,12 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   inputSection: {
-    gap: 24,
+    gap: 4,
     marginBottom: 60,
-  },
-  inputContainer: {
-    marginBottom: 0,
-  },
-  input: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: '#9E9E9E',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    fontFamily: 'DMSans-Regular',
-    color: '#000000',
-    backgroundColor: '#FFFFFF',
   },
   buttonSection: {
     marginTop: 'auto',
     marginBottom: 34,
-  },
-  button: {
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: '#009321',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontFamily: 'DMSans-SemiBold',
-    color: '#FFFFFF',
-    textTransform: 'capitalize',
-    letterSpacing: 0.28,
   },
 });
 

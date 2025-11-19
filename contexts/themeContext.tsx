@@ -83,7 +83,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   // Define a base primary color and generate variants
-  const basePrimary = isDarkTheme ? "#FF793F" : "#FF4D00";
+  const basePrimary = isDarkTheme ? "#009321" : "#009321";
 
   // Utility to add opacity to hex color
   const hexWithAlpha = (hex: string, alpha: number) => {
