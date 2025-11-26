@@ -33,7 +33,7 @@ export default function SplashScreen() {
     router.replace('/get-started');
   };
 
-  const {theme} = useThemeContext()
+  const { theme } = useThemeContext()
   return (
     <LinearGradient
       colors={[theme.colors.gradientShade, theme.colors.gradientTint]}

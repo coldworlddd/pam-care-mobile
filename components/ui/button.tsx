@@ -6,6 +6,7 @@ import {
   PressableProps,
   StyleSheet,
   Text,
+  TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
@@ -54,7 +55,7 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
   /**
    * Custom text style
    */
-  textStyle?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
 /**
@@ -110,7 +111,7 @@ export function Button({
         };
       default:
         return {
-          height: 40,
+          height: 50,
           paddingHorizontal: 12,
           fontSize: 14,
           gap: 8,
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'DMSans-SemiBold',
-    lineHeight: 14,
+    // lineHeight: 14,
     textTransform: 'capitalize',
     letterSpacing: 0.28,
     textAlign: 'center',

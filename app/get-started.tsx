@@ -49,7 +49,7 @@ export default function GetStartedScreen() {
             fullWidth
             leftIcon={<MaterialIcons name="email" size={24} color="#FFFFFF" />}
           >
-            Continue with Email
+            Continue With Email
           </Button>
 
           <Button
@@ -62,7 +62,7 @@ export default function GetStartedScreen() {
               </View>
             }
           >
-            Continue with Google
+            Continue With Google
           </Button>
         </View>
 
@@ -92,43 +92,42 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 48,
+    paddingHorizontal: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   titleSection: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 80,
     width: '100%',
-    maxWidth: 280,
+    maxWidth: 300,
   },
   title: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
     fontFamily: 'DMSans-Bold',
     color: '#000000',
     textAlign: 'center',
-    letterSpacing: -0.36,
-    marginBottom: 12,
+    letterSpacing: -0.5,
+    marginBottom: 16,
   },
   titleGradient: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
     fontFamily: 'DMSans-Bold',
-    letterSpacing: -0.36,
-    color: '#009321',
+    letterSpacing: -0.5,
+    color: '#1B4D3E', // Darker green from design
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
     fontFamily: 'DMSans-Regular',
-    color: 'rgba(26, 26, 26, 0.6)',
+    color: '#666666',
     textAlign: 'center',
   },
   buttonsSection: {
     width: '100%',
-    maxWidth: 347,
-    gap: 14,
+    gap: 16,
     marginBottom: 60,
   },
   googleIconContainer: {
@@ -136,30 +135,29 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
   },
   googleIconText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'DMSans-Bold',
-    color: '#4285F4',
-    fontWeight: 'bold',
+    color: '#EA4335', // Google Red
   },
   legalSection: {
     width: '100%',
-    maxWidth: 241,
+    maxWidth: 280,
     alignItems: 'center',
+    position: 'absolute',
+    bottom: 50,
   },
   legalText: {
-    fontSize: 12,
-    lineHeight: 18,
-    fontFamily: 'DMSans-Medium',
-    color: '#1a1a1a',
+    fontSize: 13,
+    lineHeight: 20,
+    fontFamily: 'DMSans-Regular',
+    color: '#000000',
     textAlign: 'center',
   },
   legalLink: {
-    color: '#009321',
-    textDecorationLine: 'underline',
+    color: '#2F9F4C', // Green link color
+    fontFamily: 'DMSans-Medium',
   },
 });
 

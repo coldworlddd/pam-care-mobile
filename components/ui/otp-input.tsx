@@ -90,11 +90,6 @@ export const OTPInput = forwardRef<View, OTPInputProps>(
       }
     };
 
-    const getBorderColor = () => {
-      if (disabled) return 'rgba(158, 158, 158, 0.3)';
-      return '#9E9E9E';
-    };
-
     return (
       <View ref={ref} style={styles.container}>
         {otpArray.map((digit, index) => (
@@ -106,8 +101,7 @@ export const OTPInput = forwardRef<View, OTPInputProps>(
             style={[
               styles.otpInput,
               {
-                borderColor: getBorderColor(),
-                backgroundColor: theme.colors.inputBackground || '#FFFFFF',
+                backgroundColor: '#F9FAFB',
                 opacity: disabled ? 0.6 : 1,
               },
             ]}
@@ -131,19 +125,18 @@ OTPInput.displayName = 'OTPInput';
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 12,
     justifyContent: 'center',
   },
   otpInput: {
-    width: 44,
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 8,
+    width: 60,
+    height: 60,
+    borderRadius: 16,
     textAlign: 'center',
     fontSize: 24,
-    fontFamily: 'DMSans-Regular',
+    fontFamily: 'DMSans-Bold',
     color: '#000000',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F9FAFB',
   },
 });
 

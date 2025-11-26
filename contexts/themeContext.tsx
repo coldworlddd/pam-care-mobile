@@ -15,7 +15,7 @@ interface Theme {
     primary3: string;
     primary4: string;
     primary5: string;
-    gradientTint:string,
+    gradientTint: string,
     gradientShade: string,
     secondary: string;
     tertiary: string;
@@ -33,6 +33,7 @@ interface Theme {
     black5: string;
     black7: string;
     black8: string;
+    grey: string;
     white: string;
     buttonBackground: string;
     inputBackground: string;
@@ -102,8 +103,8 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       primary3: hexWithAlpha(basePrimary, 0.6),
       primary4: hexWithAlpha(basePrimary, 0.4),
       primary5: hexWithAlpha(basePrimary, 0.2),
-      gradientTint:"#55BE5A",
-    gradientShade: "#1B3E1C",
+      gradientTint: "#55BE5A",
+      gradientShade: "#1B3E1C",
       secondary: isDarkTheme ? "#7041FF" : "#F5F5DC",
       tertiary: isDarkTheme ? "#404E5C" : "#404E5C",
       background: isDarkTheme ? "#161E29" : "#ffffff",
@@ -120,9 +121,10 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       black5: isDarkTheme ? "#ffffff" : "#888888",
       black7: isDarkTheme ? "#ffffff" : "#bbbbbb",
       black8: isDarkTheme ? "#ffffff" : "#eeeeee",
+      grey: isDarkTheme ? "#ffffff" : "#E2E8F0",
       white: "#ffffff",
       buttonBackground: isDarkTheme ? "#7041FF" : "#5338A8",
-      inputBackground: isDarkTheme ? "#212D3D" : "#F5F7F7",
+      inputBackground: isDarkTheme ? "#212D3D" : "#FFFFFF",
       yellow: isDarkTheme ? "#FFFF00" : "#D3BE00",
       orange: isDarkTheme ? "#FE7902" : "#FF5F1F",
       green: isDarkTheme ? "#32C71A" : "#2D9A1C",

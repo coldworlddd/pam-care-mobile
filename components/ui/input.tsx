@@ -54,6 +54,14 @@ export interface InputProps extends TextInputProps {
    * Whether to show focus state
    */
   showFocusState?: boolean;
+  /**
+   * Validation function or regex pattern
+   */
+  validate?: ((value: string) => boolean) | RegExp;
+  /**
+   * Error message to display when validation fails
+   */
+  errorMessage?: string;
 }
 
 /**
@@ -66,8 +74,8 @@ export interface InputProps extends TextInputProps {
  *   placeholder="Enter your email"
  *   value={email}
  *   onChangeText={setEmail}
- *   error={error}
- *   helperText="We'll never share your email"
+ *   validate={(val) => val.includes('@')}
+ *   errorMessage="Invalid email"
  * />
  * ```
  */
@@ -89,15 +97,51 @@ export const Input = forwardRef<TextInput, InputProps>(
       placeholderTextColor,
       onFocus,
       onBlur,
+      validate,
+      errorMessage,
+      onChangeText,
       ...textInputProps
     },
     ref
   ) => {
     const { theme } = useThemeContext();
     const [isFocused, setIsFocused] = useState(false);
-    
-    const hasError = Boolean(error) || variant === 'error';
-    const hasSuccess = Boolean(success) || variant === 'success';
+    const [touched, setTouched] = useState(false);
+    const [internalError, setInternalError] = useState('');
+    const [internalSuccess, setInternalSuccess] = useState(false);
+
+    const handleValidation = (text: string) => {
+      if (!validate) return;
+
+      let isValid = false;
+      if (typeof validate === 'function') {
+        isValid = validate(text);
+      } else if (validate instanceof RegExp) {
+        isValid = validate.test(text);
+      }
+
+      if (text.length > 0) {
+        if (isValid) {
+          setInternalError('');
+          setInternalSuccess(true);
+        } else {
+          setInternalError(errorMessage || 'Invalid input');
+          setInternalSuccess(false);
+        }
+      } else {
+        setInternalError('');
+        setInternalSuccess(false);
+      }
+    };
+
+    const handleChangeText = (text: string) => {
+      setTouched(true);
+      onChangeText?.(text);
+      handleValidation(text);
+    };
+
+    const hasError = Boolean(error) || Boolean(internalError) || variant === 'error';
+    const hasSuccess = Boolean(success) || internalSuccess || variant === 'success';
     const isDisabled = disabled || textInputProps.editable === false;
 
     // Determine border color based on state
@@ -106,7 +150,7 @@ export const Input = forwardRef<TextInput, InputProps>(
       if (hasSuccess) return theme.colors.success || '#188754';
       if (isFocused && showFocusState) return theme.colors.primary || '#009321';
       if (isDisabled) return 'rgba(158, 158, 158, 0.3)';
-      return '#9E9E9E';
+      return '#E2E8F0';
     };
 
     const getAccentColor = () => {
@@ -124,9 +168,9 @@ export const Input = forwardRef<TextInput, InputProps>(
         const expandedHex =
           hex.length === 3
             ? hex
-                .split('')
-                .map((char) => `${char}${char}`)
-                .join('')
+              .split('')
+              .map((char) => `${char}${char}`)
+              .join('')
             : hex;
         const bigint = parseInt(expandedHex, 16);
         const r = (bigint >> 16) & 255;
@@ -171,7 +215,7 @@ export const Input = forwardRef<TextInput, InputProps>(
         case 'large':
           return { height: 52, fontSize: 18, paddingHorizontal: 20 };
         default:
-          return { height: 44, fontSize: 16, paddingHorizontal: 16 };
+          return { height: 50, fontSize: 14, paddingHorizontal: 16 };
       }
     };
 
@@ -179,7 +223,7 @@ export const Input = forwardRef<TextInput, InputProps>(
 
     const handleFocus = (e: any) => {
       setIsFocused(true);
-      onFocus?.(e);
+      // onFocus?.(e);
     };
 
     const handleBlur = (e: any) => {
@@ -192,8 +236,8 @@ export const Input = forwardRef<TextInput, InputProps>(
       accentColor && accentColor !== 'rgba(158, 158, 158, 0.3)'
         ? toRgba(accentColor, 0.12)
         : accentColor
-        ? toRgba(accentColor, 0.08)
-        : 'transparent';
+          ? toRgba(accentColor, 0.08)
+          : 'transparent';
 
     return (
       <View style={[styles.container, containerStyle]}>
@@ -268,6 +312,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               editable={!isDisabled}
               // onFocus={handleFocus}
               onBlur={handleBlur}
+              onChangeText={handleChangeText}
               {...textInputProps}
             />
 
@@ -287,9 +332,9 @@ export const Input = forwardRef<TextInput, InputProps>(
           </View>
         </View>
 
-        {(error || success || helperText) && (
+        {(error || internalError || success || internalSuccess || helperText) && (
           <View style={styles.helperContainer}>
-            {error ? (
+            {error || internalError ? (
               <Text
                 style={[
                   styles.errorText,
@@ -299,9 +344,9 @@ export const Input = forwardRef<TextInput, InputProps>(
                   },
                 ]}
               >
-                {error}
+                {error || internalError}
               </Text>
-            ) : success ? (
+            ) : success || internalSuccess ? (
               <Text
                 style={[
                   styles.successText,
@@ -377,10 +422,11 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
     color: '#000000',
+    backgroundColor: "transparent"
   },
   leftIconContainer: {
     justifyContent: 'center',

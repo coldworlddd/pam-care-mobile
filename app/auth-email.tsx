@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useThemeContext } from '@/contexts/themeContext';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -11,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AuthEmailScreen() {
   const router = useRouter();
+  const { theme } = useThemeContext()
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +25,7 @@ export default function AuthEmailScreen() {
 
   const handleContinue = () => {
     setError('');
-    
+
     if (!email.trim()) {
       setError('Email is required');
       return;
@@ -48,6 +51,8 @@ export default function AuthEmailScreen() {
     // TODO: Implement forgotten password flow
   };
 
+  const isEmailValid = validateEmail(email);
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.content}>
@@ -60,7 +65,7 @@ export default function AuthEmailScreen() {
         {/* Input Section */}
         <View style={styles.inputSection}>
           <Input
-            placeholder="Email"
+            placeholder="Email Address"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -72,6 +77,8 @@ export default function AuthEmailScreen() {
             editable={!isLoading}
             error={error}
             disabled={isLoading}
+            leftIcon={<MaterialIcons name="mail-outline" size={20} color={theme.colors.black7} />}
+            containerStyle={styles.inputContainer}
           />
         </View>
 
@@ -81,8 +88,10 @@ export default function AuthEmailScreen() {
             variant="primary"
             onPress={handleContinue}
             loading={isLoading}
-            disabled={isLoading}
+            disabled={isLoading || !email}
             fullWidth
+            style={!email ? styles.disabledButton : undefined}
+            textStyle={!email ? styles.disabledButtonText : undefined}
           >
             Continue
           </Button>
@@ -91,6 +100,7 @@ export default function AuthEmailScreen() {
             variant="text"
             onPress={handleForgottenPassword}
             style={styles.forgotPasswordButton}
+            textStyle={styles.forgotPasswordText}
           >
             Forgotten Password
           </Button>
@@ -107,35 +117,58 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 61,
+    paddingHorizontal: 24,
+    paddingTop: 80,
   },
   titleSection: {
-    marginBottom: 84,
-    maxWidth: 280,
+    marginBottom: 80,
+    alignItems: 'center',
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    lineHeight: 28,
+    lineHeight: 32,
     fontFamily: 'DMSans-Bold',
     color: '#000000',
-    letterSpacing: -0.36,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
-    color: 'rgba(26, 26, 26, 0.6)',
+    color: '#666666',
+    textAlign: 'center',
   },
   inputSection: {
-    marginBottom: 60,
+    marginBottom: 24,
+  },
+  inputContainer: {
+    // Custom style to match the design's green border if needed, 
+    // but Input component handles border color. 
+    // We might need to rely on focus state or modify Input component for static border.
   },
   buttonSection: {
-    gap: 24,
+    gap: 16,
+    alignItems: 'center',
+    justifyContent: "center"
+  },
+  disabledButton: {
+    backgroundColor: '#F5F7F7',
+    opacity: 1, // Override default disabled opacity
+  },
+  disabledButtonText: {
+    color: '#A0A0A0',
   },
   forgotPasswordButton: {
     alignItems: 'center',
+    height: 'auto',
+    paddingVertical: 0,
+  },
+  forgotPasswordText: {
+    color: '#000000',
+    fontSize: 14,
+    fontFamily: 'DMSans-Medium',
   },
 });
 

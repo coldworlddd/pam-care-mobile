@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { OTPInput } from '@/components/ui/otp-input';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -117,17 +116,18 @@ export default function VerifyOtpScreen() {
           </View>
 
           {/* Continue Button */}
-          {isOtpComplete && (
-            <View style={styles.buttonSection}>
-              <Button
-                variant="primary"
-                onPress={() => handleVerify()}
-                fullWidth
-              >
-                Continue
-              </Button>
-            </View>
-          )}
+          {/* <View style={styles.buttonSection}>
+            <Button
+              variant="primary"
+              onPress={() => handleVerify()}
+              fullWidth
+              disabled={!isOtpComplete}
+              style={!isOtpComplete ? styles.disabledButton : undefined}
+              textStyle={!isOtpComplete ? styles.disabledButtonText : undefined}
+            >
+              Continue
+            </Button>
+          </View> */}
         </View>
       )}
     </SafeAreaView>
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 48,
-    paddingTop: 61,
+    paddingHorizontal: 24,
+    paddingTop: 80,
   },
   loadingContainer: {
     flex: 1,
@@ -168,25 +168,27 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   titleSection: {
-    marginBottom: 56,
-    maxWidth: 280,
+    marginBottom: 40,
+    alignItems: 'center',
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    lineHeight: 28,
+    lineHeight: 32,
     fontFamily: 'DMSans-Bold',
     color: '#000000',
-    letterSpacing: -0.36,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
-    color: 'rgba(26, 26, 26, 0.6)',
+    color: '#666666',
+    textAlign: 'center',
   },
   otpSection: {
-    marginBottom: 48,
+    marginBottom: 40,
   },
   resendSection: {
     alignItems: 'center',
@@ -196,14 +198,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
-    color: '#000000',
+    color: '#666666',
     marginBottom: 16,
   },
   resendTimer: {
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
-    color: 'rgba(26, 26, 26, 0.6)',
+    color: '#666666',
   },
   resendLink: {
     fontSize: 14,
@@ -215,6 +217,13 @@ const styles = StyleSheet.create({
   buttonSection: {
     marginTop: 'auto',
     marginBottom: 34,
+  },
+  disabledButton: {
+    backgroundColor: '#F5F7F7',
+    opacity: 1,
+  },
+  disabledButtonText: {
+    color: '#A0A0A0',
   },
 });
 

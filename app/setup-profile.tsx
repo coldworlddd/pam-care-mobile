@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // TODO: Install expo-image-picker: npx expo install expo-image-picker
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function SetupProfileScreen() {
   const router = useRouter();
@@ -24,9 +24,9 @@ export default function SetupProfileScreen() {
   const handlePickImage = async () => {
     // TODO: Implement image picker when expo-image-picker is installed
     // Uncomment the following code after installing: npx expo install expo-image-picker
-    /*
+
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (status !== 'granted') {
       alert('Sorry, we need camera roll permissions!');
       return;
@@ -42,8 +42,7 @@ export default function SetupProfileScreen() {
     if (!result.canceled && result.assets[0]) {
       setProfileImage(result.assets[0].uri);
     }
-    */
-    alert('Image picker will be available after installing expo-image-picker');
+
   };
 
   const handleContinue = () => {
@@ -56,7 +55,7 @@ export default function SetupProfileScreen() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      router.replace('/(tabs)');
+      router.replace('/home-screen');
     }, 1000);
   };
 
@@ -81,7 +80,7 @@ export default function SetupProfileScreen() {
               <Image source={{ uri: profileImage }} style={styles.profileImage} />
             ) : (
               <View style={styles.photoPlaceholder}>
-                <MaterialIcons name="person" size={24} color="rgba(26, 26, 26, 0.4)" />
+                <MaterialIcons name="person-outline" size={32} color="#000000" />
               </View>
             )}
           </Pressable>
@@ -133,64 +132,63 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 14,
-    paddingTop: 61,
+    paddingHorizontal: 24,
+    paddingTop: 80,
   },
   titleSection: {
     marginBottom: 40,
-    maxWidth: 280,
-    paddingLeft: 34,
+    alignItems: 'center',
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    lineHeight: 28,
+    lineHeight: 32,
     fontFamily: 'DMSans-Bold',
     color: '#000000',
-    letterSpacing: -0.36,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     lineHeight: 20,
     fontFamily: 'DMSans-Regular',
-    color: 'rgba(26, 26, 26, 0.6)',
+    color: '#666666',
+    textAlign: 'center',
   },
   photoSection: {
     alignItems: 'center',
-    marginBottom: 44,
+    marginBottom: 40,
   },
   photoContainer: {
-    width: 81,
-    height: 81,
-    marginBottom: 8,
+    width: 80,
+    height: 80,
+    marginBottom: 12,
   },
   photoPlaceholder: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: 'rgba(26, 26, 26, 0.05)',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#F5F7F7',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(26, 26, 26, 0.1)',
   },
   profileImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   addPhotoText: {
     fontSize: 14,
     lineHeight: 20,
-    fontFamily: 'DMSans-Regular',
-    color: '#000000',
+    fontFamily: 'DMSans-Medium',
+    color: '#009321',
   },
   inputSection: {
-    gap: 4,
-    marginBottom: 60,
+    gap: 16,
+    marginBottom: 40,
   },
   buttonSection: {
-    marginTop: 'auto',
+    // marginTop: 'auto',
     marginBottom: 34,
   },
 });
