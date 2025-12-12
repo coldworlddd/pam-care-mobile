@@ -14,12 +14,33 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // TODO: Install expo-image-picker: npx expo install expo-image-picker
 import * as ImagePicker from 'expo-image-picker';
 
+import { api } from '@/api/client';
+import { useEffect } from 'react';
+
 export default function SetupProfileScreen() {
   const router = useRouter();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await api.get('/auth/me');
+        const user = response.data;
+        if (user) {
+          setFirstName(user.firstName || '');
+          setLastName(user.lastName || '');
+          setProfileImage(user.profileImage || null);
+        }
+      } catch (error) {
+        console.log('Failed to fetch user details', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handlePickImage = async () => {
     // TODO: Implement image picker when expo-image-picker is installed
@@ -45,18 +66,25 @@ export default function SetupProfileScreen() {
 
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!firstName.trim() || !lastName.trim()) {
       alert('Please enter your first and last name');
       return;
     }
 
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await api.post('/auth/complete-registration', {
+        firstName,
+        lastName,
+        profileImage,
+      });
       router.replace('/home-screen');
-    }, 1000);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

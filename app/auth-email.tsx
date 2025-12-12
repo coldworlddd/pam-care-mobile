@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { api } from '@/api/client';
+
 export default function AuthEmailScreen() {
   const router = useRouter();
   const { theme } = useThemeContext()
@@ -23,7 +25,7 @@ export default function AuthEmailScreen() {
     return emailRegex.test(email);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setError('');
 
     if (!email.trim()) {
@@ -37,14 +39,18 @@ export default function AuthEmailScreen() {
     }
 
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { data } = await api.post('/auth/send-otp', { email });
+      console.log({ data })
       router.push({
         pathname: '/verify-otp',
         params: { email: email },
       });
-    }, 1000);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgottenPassword = () => {

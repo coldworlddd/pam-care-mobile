@@ -1,5 +1,6 @@
+import GoogleIcon from '@/components/icon/Google';
+import MailIcon from '@/components/icon/Mail';
 import { Button } from '@/components/ui/button';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Linking, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -47,7 +48,7 @@ export default function GetStartedScreen() {
             variant="primary"
             onPress={handleEmailPress}
             fullWidth
-            leftIcon={<MaterialIcons name="email" size={24} color="#FFFFFF" />}
+            leftIcon={<MailIcon size={24} />}
           >
             Continue With Email
           </Button>
@@ -56,11 +57,7 @@ export default function GetStartedScreen() {
             variant="outline"
             onPress={handleGooglePress}
             fullWidth
-            leftIcon={
-              <View style={styles.googleIconContainer}>
-                <Text style={styles.googleIconText}>G</Text>
-              </View>
-            }
+            leftIcon={<GoogleIcon size={24} />}
           >
             Continue With Google
           </Button>
@@ -89,12 +86,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
   },
   content: {
-    flex: 1,
+    flex: 0.9,
     paddingHorizontal: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: "10%",
   },
   titleSection: {
     alignItems: 'center',
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     lineHeight: 34,
     fontFamily: 'DMSans-Bold',
     color: '#000000',
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
   buttonsSection: {
     width: '100%',
     gap: 16,
-    marginBottom: 60,
+    // marginBottom: 60,
   },
   googleIconContainer: {
     width: 24,
@@ -145,8 +144,8 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 280,
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 50,
+    // position: 'absolute',
+    // bottom: 50,
   },
   legalText: {
     fontSize: 13,

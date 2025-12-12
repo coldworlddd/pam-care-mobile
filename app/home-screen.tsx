@@ -14,10 +14,10 @@ export default function HomeScreen() {
     const router = useRouter();
 
     const commonConditions = [
-        'Joint Pain',
-        'Fever',
-        'Chills / Shivering',
+        'High BP',
+        'Diabetes',
         'Pregnancy',
+        'Chills / Shivering',
         'Headache',
     ];
 
