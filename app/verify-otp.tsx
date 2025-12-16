@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { api } from '@/api/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function VerifyOtpScreen() {
   const router = useRouter();
@@ -47,8 +48,18 @@ export default function VerifyOtpScreen() {
 
     setIsVerifying(true);
     try {
-      await api.post('/auth/verify-otp', { email, otp: code });
-      router.push('/setup-profile');
+      const response = await api.post('/auth/verify-otp', { email, code });
+
+      if (response.data.token) {
+        await AsyncStorage.setItem('userToken', response.data.token);
+        if (response.data.user) {
+          await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
+        }
+        router.replace('/home-screen');
+      } else {
+        router.push({ pathname: '/setup-profile', params: { email } });
+      }
+
     } catch (error: any) {
       alert(error.response?.data?.message || 'Invalid OTP');
     } finally {

@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -11,14 +13,14 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// TODO: Install expo-image-picker: npx expo install expo-image-picker
-import * as ImagePicker from 'expo-image-picker';
 
 import { api } from '@/api/client';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 
 export default function SetupProfileScreen() {
   const router = useRouter();
+  const email: any = useLocalSearchParams().email;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -43,8 +45,6 @@ export default function SetupProfileScreen() {
   }, []);
 
   const handlePickImage = async () => {
-    // TODO: Implement image picker when expo-image-picker is installed
-    // Uncomment the following code after installing: npx expo install expo-image-picker
 
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -72,13 +72,27 @@ export default function SetupProfileScreen() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('first_name', firstName);
+    formData.append('last_name', lastName);
+    formData.append('profile_image', profileImage!);
+
     setIsLoading(true);
     try {
-      await api.post('/auth/complete-registration', {
+      const response = await api.post('/auth/complete-registration', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      });
+
+      await AsyncStorage.setItem('userData', JSON.stringify({
         firstName,
         lastName,
-        profileImage,
-      });
+        email: email,
+        profileImage: profileImage
+      }));
+
       router.replace('/home-screen');
     } catch (error: any) {
       alert(error.response?.data?.message || 'Failed to update profile');
