@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { api } from '@/api/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function VerifyOtpScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -44,23 +47,39 @@ export default function VerifyOtpScreen() {
     if (code.length !== 4) return;
 
     setIsVerifying(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await api.post('/auth/verify-otp', { email, code });
+
+      if (response.data.token) {
+        await AsyncStorage.setItem('userToken', response.data.token);
+        if (response.data.user) {
+          await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
+        }
+        router.replace('/home-screen');
+      } else {
+        router.push({ pathname: '/setup-profile', params: { email } });
+      }
+
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Invalid OTP');
+    } finally {
       setIsVerifying(false);
-      router.push('/setup-profile');
-    }, 1500);
+    }
   };
 
   const handleResendCode = async () => {
     if (timer > 0 || isResending) return;
 
     setIsResending(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsResending(false);
+    try {
+      await api.post('/auth/send-otp', { email });
       setTimer(63);
       setOtp(['', '', '', '']);
-    }, 1000);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to resend code');
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const isOtpComplete = otp.every((digit) => digit !== '');

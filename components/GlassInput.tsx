@@ -7,33 +7,50 @@ interface GlassInputProps {
     value?: string;
     onChangeText?: (text: string) => void;
     editable?: boolean;
+    placeholder?: string;
+    variant?: 'chat' | 'default';
 }
 
-export default function GlassInput({ onPress, value, onChangeText, editable = true }: GlassInputProps) {
+export default function GlassInput({
+    onPress,
+    value,
+    onChangeText,
+    editable = true,
+    placeholder = "Ask anything about your health",
+    variant = 'chat'
+}: GlassInputProps) {
     return (
         <Pressable onPress={onPress} style={styles.container}>
             <BlurView intensity={20} tint="light" style={styles.blur}>
-                <Pressable style={styles.iconButton}>
-                    <Ionicons name="attach" size={24} color="#FFFFFF" />
-                </Pressable>
-                <Pressable style={styles.iconButton}>
-                    <Ionicons name="mic" size={24} color="#FFFFFF" />
-                </Pressable>
+                {variant === 'chat' && (
+                    <>
+                        <Pressable style={styles.iconButton}>
+                            <Ionicons name="attach" size={24} color="#FFFFFF" />
+                        </Pressable>
+                        <Pressable style={styles.iconButton}>
+                            <Ionicons name="mic" size={24} color="#FFFFFF" />
+                        </Pressable>
+                    </>
+                )}
+
                 <TextInput
                     style={styles.input}
-                    placeholder="Ask anything about your health"
+                    placeholder={placeholder}
                     placeholderTextColor="rgba(255, 255, 255, 0.7)"
                     value={value}
                     onChangeText={onChangeText}
                     editable={editable && !onPress}
                     pointerEvents={onPress ? 'none' : 'auto'}
                 />
-                <Pressable style={[styles.iconButton, styles.sendButton]}>
-                    <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
-                </Pressable>
+
+                {variant === 'chat' && (
+                    <Pressable style={[styles.iconButton, styles.sendButton]}>
+                        <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
+                    </Pressable>
+                )}
             </BlurView>
         </Pressable>
-    );
+    ); //
 }
 
 const styles = StyleSheet.create({

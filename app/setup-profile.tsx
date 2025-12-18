@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -11,19 +13,38 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// TODO: Install expo-image-picker: npx expo install expo-image-picker
-import * as ImagePicker from 'expo-image-picker';
+
+import { api } from '@/api/client';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function SetupProfileScreen() {
   const router = useRouter();
+  const email: any = useLocalSearchParams().email;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await api.get('/auth/me');
+        const user = response.data;
+        if (user) {
+          setFirstName(user.firstName || '');
+          setLastName(user.lastName || '');
+          setProfileImage(user.profileImage || null);
+        }
+      } catch (error) {
+        console.log('Failed to fetch user details', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const handlePickImage = async () => {
-    // TODO: Implement image picker when expo-image-picker is installed
-    // Uncomment the following code after installing: npx expo install expo-image-picker
 
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -45,18 +66,39 @@ export default function SetupProfileScreen() {
 
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!firstName.trim() || !lastName.trim()) {
       alert('Please enter your first and last name');
       return;
     }
 
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('first_name', firstName);
+    formData.append('last_name', lastName);
+    formData.append('profile_image', profileImage!);
+
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const response = await api.post('/auth/complete-registration', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      });
+
+      await AsyncStorage.setItem('userData', JSON.stringify({
+        firstName,
+        lastName,
+        email: email,
+        profileImage: profileImage
+      }));
+
       router.replace('/home-screen');
-    }, 1000);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
