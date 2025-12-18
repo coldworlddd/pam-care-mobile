@@ -115,6 +115,7 @@ export default function HomeScreen() {
                                 title="Book Appointment"
                                 description="Schedule a visit with a clinic or doctor."
                                 icon="calendar-outline"
+                                onPress={() => router.push('/appointment')}
                             />
                             <ActionCard
                                 title="Patient Report"
