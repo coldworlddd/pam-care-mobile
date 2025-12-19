@@ -1,23 +1,67 @@
+import { api } from '@/api/client';
 import GlassInput from '@/components/GlassInput';
 import { useThemeContext } from '@/contexts/themeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ChatScreen() {
     const { theme } = useThemeContext();
     const router = useRouter();
     const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState<any[]>([
+        { id: 1, text: 'Hello! I am your PamCare AI assistant. How can I help you today?', isUser: false },
+    ]);
+    const [loading, setLoading] = useState(false);
+    const scrollViewRef = useRef<ScrollView>(null);
 
-    const messages: any[] = [
-        // { id: 1, text: 'hi', isUser: true },
-        // { id: 2, text: 'Hello! How may I assist you today?', isUser: false },
-        // { id: 3, text: 'I have joint pain in my knees', isUser: true },
-    ];
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleSend = async () => {
+        if (!message.trim() || loading) return;
+
+        const userMsg = message.trim();
+        const newMsg = { id: Date.now(), text: userMsg, isUser: true };
+
+        setMessages(prev => [...prev, newMsg]);
+        setMessage('');
+        setLoading(true);
+
+        try {
+            const response = await api.post('/chat', { message: userMsg });
+
+            if (response.data && response.data.aiResponse) {
+                const aiMsg = {
+                    id: Date.now() + 1,
+                    text: response.data.aiResponse,
+                    isUser: false
+                };
+                setMessages(prev => [...prev, aiMsg]);
+            }
+        } catch (error) {
+            console.error('Chat error:', error);
+            const errorMsg = {
+                id: Date.now() + 1,
+                text: 'Sorry, I encountered an error. Please try again.',
+                isUser: false
+            };
+            setMessages(prev => [...prev, errorMsg]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <LinearGradient
@@ -39,7 +83,11 @@ export default function ChatScreen() {
                 </View>
 
                 {/* Chat Area */}
-                <ScrollView contentContainerStyle={styles.chatContent}>
+                <ScrollView
+                    ref={scrollViewRef}
+                    contentContainerStyle={styles.chatContent}
+                    showsVerticalScrollIndicator={false}
+                >
                     {messages.map((msg) => (
                         <View
                             key={msg.id}
@@ -58,11 +106,24 @@ export default function ChatScreen() {
                                     <Ionicons name="person" size={20} color="#FFFFFF" />
                                 </View>
                             )}
-                            <View style={styles.messageBubble}>
+                            <View style={[
+                                styles.messageBubble,
+                                msg.isUser ? styles.userBubble : styles.aiBubble
+                            ]}>
                                 <Text style={styles.messageText}>{msg.text}</Text>
                             </View>
                         </View>
                     ))}
+                    {loading && (
+                        <View style={styles.aiMessageRow}>
+                            <View style={styles.avatarContainer}>
+                                <Ionicons name="logo-electron" size={24} color="#000000" />
+                            </View>
+                            <View style={[styles.messageBubble, styles.aiBubble, { paddingVertical: 12 }]}>
+                                <ActivityIndicator size="small" color="#FFFFFF" />
+                            </View>
+                        </View>
+                    )}
                 </ScrollView>
 
                 {/* Input Area */}
@@ -74,6 +135,8 @@ export default function ChatScreen() {
                         <GlassInput
                             value={message}
                             onChangeText={setMessage}
+                            onSend={handleSend}
+                            editable={!loading}
                         />
                     </View>
                 </KeyboardAvoidingView>
@@ -144,6 +207,17 @@ const styles = StyleSheet.create({
     },
     messageBubble: {
         maxWidth: '75%',
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+    },
+    userBubble: {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderTopRightRadius: 4,
+    },
+    aiBubble: {
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        borderTopLeftRadius: 4,
     },
     messageText: {
         fontSize: 16,

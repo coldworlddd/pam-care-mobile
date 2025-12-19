@@ -6,6 +6,7 @@ interface GlassInputProps {
     onPress?: () => void;
     value?: string;
     onChangeText?: (text: string) => void;
+    onSend?: () => void;
     editable?: boolean;
     placeholder?: string;
     variant?: 'chat' | 'default';
@@ -15,6 +16,7 @@ export default function GlassInput({
     onPress,
     value,
     onChangeText,
+    onSend,
     editable = true,
     placeholder = "Ask anything about your health",
     variant = 'chat'
@@ -32,19 +34,22 @@ export default function GlassInput({
                         </Pressable>
                     </>
                 )}
-
                 <TextInput
                     style={styles.input}
                     placeholder={placeholder}
                     placeholderTextColor="rgba(255, 255, 255, 0.7)"
                     value={value}
+                    multiline
                     onChangeText={onChangeText}
                     editable={editable && !onPress}
                     pointerEvents={onPress ? 'none' : 'auto'}
                 />
 
                 {variant === 'chat' && (
-                    <Pressable style={[styles.iconButton, styles.sendButton]}>
+                    <Pressable
+                        style={[styles.iconButton, styles.sendButton]}
+                        onPress={onSend}
+                    >
                         <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
                     </Pressable>
                 )}
