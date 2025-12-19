@@ -1,4 +1,3 @@
-import { DarkTheme, DefaultTheme, } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -6,8 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import ThemeProvider from '@/contexts/themeContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // Silently ignore any splash screen errors during startup
