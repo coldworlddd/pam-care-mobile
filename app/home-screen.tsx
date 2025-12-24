@@ -58,11 +58,11 @@ export default function HomeScreen() {
     }, []);
 
     const commonConditions = [
-        'High BP',
+        'Arthritis',
+        'High Bp',
         'Diabetes',
+        'Malaria',
         'Pregnancy',
-        'Chills / Shivering',
-        'Headache',
     ];
 
     return (
